@@ -442,7 +442,7 @@ public:
     double roll,pitch,yaw;
 
     imu.receiveAccelAngrateOrientation(&time, accel, angrate, orientation);
-    data.linear_acceleration.x = -accel[0];
+    data.linear_acceleration.x = accel[0];
     data.linear_acceleration.y = -accel[1];
     data.linear_acceleration.z = -accel[2];
  
