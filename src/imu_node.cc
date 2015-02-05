@@ -439,24 +439,25 @@ public:
     double accel[3];
     double angrate[3];
     double orientation[9];
+    double roll,pitch,yaw;
 
     imu.receiveAccelAngrateOrientation(&time, accel, angrate, orientation);
-    data.linear_acceleration.x = accel[0];
-    data.linear_acceleration.y = accel[1];
-    data.linear_acceleration.z = accel[2];
+    data.linear_acceleration.x = -accel[0];
+    data.linear_acceleration.y = -accel[1];
+    data.linear_acceleration.z = -accel[2];
  
     data.angular_velocity.x = angrate[0];
-    data.angular_velocity.y = angrate[1];
-    data.angular_velocity.z = angrate[2];
+    data.angular_velocity.y = -angrate[1];
+    data.angular_velocity.z = -angrate[2];
       
     tf::Quaternion quat;
-    (tf::Matrix3x3(-1,0,0,
-		 0,1,0,
-		 0,0,-1)*
+
     tf::Matrix3x3(orientation[0], orientation[3], orientation[6],
 		 orientation[1], orientation[4], orientation[7],
-		 orientation[2], orientation[5], orientation[8])).getRotation(quat);
-    
+		 orientation[2], orientation[5], orientation[8]).getRPY(roll, pitch, yaw);
+
+    quat.setRPY(roll, -pitch, -yaw);
+
     tf::quaternionTFToMsg(quat, data.orientation);
       
     data.header.stamp = ros::Time::now().fromNSec(time);
